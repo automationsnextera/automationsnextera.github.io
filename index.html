@@ -52,22 +52,10 @@
         gtag('config', 'G-JGV84C1B4V');
     </script>
     
-    <script type="module">
-      (function(d, t) {
-        var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-        v.onload = function() {
-          window.voiceflow.chat.load({
-            verify: { projectID: '68f94079fbd96e7839966ea4' },
-            url: 'https://general-runtime.voiceflow.com',
-            versionID: 'production'
-          });
-        };
-        v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
-        s.parentNode.insertBefore(v, s);
-      })(document, 'script');
-    </script>
-
     
+
+
+        
 
 
     <style>
@@ -847,10 +835,10 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                             <div class="hero_descr">
                                 <p class="f-16 mb-32 sm-f-16 sm-mb-24">Delivering intelligent automation, data-driven insights, and next-level digital experiences.</p>
                             </div>
-                            <a data-popup-trigger="false" data-scroll="false" data-module="Button" data-wf--button--variant="base"  class="btn w-inline-block">
-                                <div class="btn_text">
-                                    <div id="triggerWorkflow" class="f-16 ls-08 caps w-500">Try Free Demo</div>
-                                    <div id="triggerWorkflow" class="f-16 is-copy ls-08 caps w-500">Try Free Demo</div>
+                            <a href="#contact" data-popup-trigger="false" data-scroll="false" data-module="Button" data-wf--button--variant="base"  class="btn w-inline-block">
+                                <div href="#contact" class="btn_text">
+                                    <div href="#contact" id="triggerWorkflow" class="f-16 ls-08 caps w-500">Try Free Demo</div>
+                                    <div href="#contact" id="triggerWorkflow" class="f-16 is-copy ls-08 caps w-500">Try Free Demo</div>
                                 </div>
                             </a>
                         </div>
@@ -1019,8 +1007,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                 </div>
                                 <div item="" role="listitem" class="marquee_item w-dyn-item">
                                     <img src="https://cdn.prod.website-files.com/685285e5fbf28f636e9bd9a4/6852863dcbc516315e999550_6584502438fea068af55240b_logo_airbnb.avif" loading="lazy" alt="" class="marquee_logo">
-                                </div>
-                                
+                                </div>                                
                                 <div item="" role="listitem" class="marquee_item w-dyn-item">
                                     <img src="https://cdn.prod.website-files.com/685285e5fbf28f636e9bd9a4/6852863ce40cd1cdc9fe84e6_6584502438fea068af55240a_logo_redbull.avif" loading="lazy" alt="" class="marquee_logo">
                                 </div>
@@ -1311,13 +1298,18 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                     <h3>Ready to Automate <em>Your Success?</em></h3>
                                 </div>
                             </div>
-                            <div class="custom-descr text-center paragraph-animation"  data-module="" data-scroll="true">
+                            <div id="#contact" class="custom-descr text-center paragraph-animation"  data-module="" data-scroll="true">
                                 <div class="rich-inherit w-richtext paragraph-item">
                                     <p>Let’s map your next move—schedule a free strategy session or reach out directly at <a href="mailto:automationsnextera@gmail.com">automationsnextera@gmail.com</a>.</p>
                                 </div>
                             </div>
                         </div>
+                        <!-- Cal inline embed code begins -->
                         <div data-hide-event-type-details="true" data-module="Calendar" data-cal-link="nextera-studios/30min" data-theme="dark" data-layout="month_view" class="booking_form"></div>
+
+                        Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+                        </script>
+  <!-- Cal inline embed code ends -->
                     </div>
                 </div>
             </section>
@@ -1434,6 +1426,33 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
     <script type="text/javascript">
         gsap.registerPlugin(ScrollTrigger, SplitText, Flip, InertiaPlugin, Draggable);
     </script>
+
+
+    <script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '68ff8332dec58992ee56128a' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          },
+          // Configuration for a much larger widget
+          launcher: {
+            size: 80 // Increases the size of the launcher button
+          },
+          chat: {
+            width: 500, // Increases the width of the chat window
+            height: 750 // Increases the height of the chat window
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
+</script>
+
 </body>
 
 </html>
