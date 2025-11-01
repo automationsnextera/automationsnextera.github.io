@@ -177,12 +177,18 @@
   });
 </script>
 <script>
-document.getElementById('triggerWorkflow').addEventListener('click', async () => {
-  await fetch('https://your-n8n-domain/webhook/my-website-button?key=SECRET123', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ message: 'Button clicked!' })
-});
+document.getElementById('triggerWorkflow').addEventListener('click', async (event) => {
+  // This line is important! It stops the <a> tag from acting like a link.
+  event.preventDefault();
+
+  // Your existing fetch request - this part is perfect.
+  await fetch('https://2tm6m8ybk5yi.share.zrok.io/webhook-test/my-website-button?key=sk-asdrrtygvbnkiuyt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'Button clicked!' })
+  });
+
+  // Let the user know it worked.
   alert('Workflow triggered!');
 });
 </script>
@@ -768,7 +774,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                 <div class="f-14 col-l-grey caps w-500 lh-120">04</div>
                             </a>
                         </div>
-                        <a data-popup-trigger="true" href="#" class="nav_item w-inline-block">
+                        <a data-popup-trigger="true" href="#contact" class="nav_item w-inline-block">
                             <div class="nav_item-text">
                                 <div link-text="" class="f-36 caps w-500 lh-120 -ls-02 link-css">BOOK A CALL</div>
                             </div>
@@ -835,10 +841,10 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                             <div class="hero_descr">
                                 <p class="f-16 mb-32 sm-f-16 sm-mb-24">Delivering intelligent automation, data-driven insights, and next-level digital experiences.</p>
                             </div>
-                            <a href="#contact" data-popup-trigger="false" data-scroll="false" data-module="Button" data-wf--button--variant="base"  class="btn w-inline-block">
-                                <div href="#contact" class="btn_text">
-                                    <div href="#contact" id="triggerWorkflow" class="f-16 ls-08 caps w-500">Try Free Demo</div>
-                                    <div href="#contact" id="triggerWorkflow" class="f-16 is-copy ls-08 caps w-500">Try Free Demo</div>
+                            <a id="triggerWorkflow" data-popup-trigger="false" data-scroll="false" data-module="Button" data-wf--button--variant="base" class="btn w-inline-block">
+                                <div class="btn_text">
+                                    <div class="f-16 ls-08 caps w-500">Try Free Demo</div>
+                                    <div class="f-16 is-copy ls-08 caps w-500">Try Free Demo</div>
                                 </div>
                             </a>
                         </div>
@@ -893,14 +899,8 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                     <h2 style="--max-w: 13ch;" class="custom-heading f-48 w-500 lh-100 mb-32 sm-f-20 sm-w-400" data-module="CharAnimation">
                                         <div class="heading_span paragraph-item">Partner with Next Era to:</div>
                                     </h2>
-                                    <div class="v-flex-left-top gap-16 sm-hide">
-                                        <a data-popup-trigger="true" data-scroll="true" data-module="Button" data-wf--button--variant="pink" href="#" class="btn w-variant-a1d1845a-9c49-2cf2-e5b7-51f2255feb50 w-inline-block">
-                                            <div class="btn_text">
-                                                <div class="f-16 ls-08 caps w-500">Book a free strategy session</div>
-                                                <div class="f-16 is-copy ls-08 caps w-500">Book a free strategy session</div>
-                                            </div>
-                                        </a>
-                                        <a data-popup-trigger="false" data-scroll="true" data-module="Button" data-wf--button--variant="base" href="/cases" class="btn w-inline-block">
+                                    <div class="v-flex-left-top gap-16 sm-hide">                                        
+                                        <a data-popup-trigger="false" data-scroll="true" data-module="Button" data-wf--button--variant="base" href="https://nexterastudios.github.io/" class="btn w-inline-block">
                                             <div class="btn_text">
                                                 <div class="f-16 ls-08 caps w-500">EXPLORE Website Agency</div>
                                                 <div class="f-16 is-copy ls-08 caps w-500">EXPLORE Website Agency</div>
@@ -935,14 +935,8 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="h-cta_btns">
-                                    <a data-popup-trigger="true" data-scroll="true" data-module="Button" data-wf--button--variant="pink" href="#" class="btn w-variant-a1d1845a-9c49-2cf2-e5b7-51f2255feb50 w-inline-block">
-                                        <div class="btn_text">
-                                            <div class="f-16 ls-08 caps w-500">Book a free strategy session</div>
-                                            <div class="f-16 is-copy ls-08 caps w-500">Book a free strategy session</div>
-                                        </div>
-                                    </a>
-                                    <a data-popup-trigger="false" data-scroll="true" data-module="Button" data-wf--button--variant="base" href="/cases" class="btn w-inline-block">
+                                <div class="h-cta_btns">                                    
+                                    <a data-popup-trigger="false" data-scroll="true" data-module="Button" data-wf--button--variant="base" href="https://nexterastudios.github.io/" class="btn w-inline-block">
                                         <div class="btn_text">
                                             <div class="f-16 ls-08 caps w-500">EXPLORE Website Agency</div>
                                             <div class="f-16 is-copy ls-08 caps w-500">EXPLORE Website Agency</div>
@@ -1108,12 +1102,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                     <p>We empower local businesses with bespoke AI solutions built on speed and trust. We pair strategic thinking with powerful automations to deliver tangible results for your bottom line.</p>
                                 </div>
                             </div>
-                            <a data-popup-trigger="true" data-scroll="true" data-module="Button" data-wf--button--variant="pink" href="#" class="btn w-variant-a1d1845a-9c49-2cf2-e5b7-51f2255feb50 w-inline-block">
-                                <div class="btn_text">
-                                    <div class="f-16 ls-08 caps w-500">BOOK AN INTRO</div>
-                                    <div class="f-16 is-copy ls-08 caps w-500">BOOK AN INTRO</div>
-                                </div>
-                            </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -1134,15 +1123,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                 <div class="rich-inherit w-richtext paragraph-item">
                                     <p>We analyze your current workflows to identify the most impactful automation opportunities. We then design a custom AI strategy to save you maximum time and resources, fast.</p>
                                 </div>
-                            </div>
-                            <div class="full_button">
-                                <a data-popup-trigger="true" data-scroll="true" data-module="Button" data-wf--button--variant="base" href="#" class="btn w-inline-block m-none">
-                                    <div class="btn_text">
-                                        <div class="f-16 ls-08 caps w-500">Let's connect</div>
-                                        <div class="f-16 is-copy ls-08 caps w-500">Let's connect</div>
-                                    </div>
-                                </a>
-                            </div>
+                            </div>                            
                         </div>
                         <div data-popup-trigger="true" data-cursor-trigger="Let's Connect" class="full_item">
                             <div class="full_bg">
@@ -1157,15 +1138,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                 <div class="rich-inherit w-richtext paragraph-item">
                                     <p>Our expert team seamlessly integrates your new AI workforce into your existing systems. We ensure a smooth, professional transition and optimize performance for immediate efficiency gains and a clear return on investment.</p>
                                 </div>
-                            </div>
-                            <div class="full_button">
-                                <a data-popup-trigger="true" data-scroll="true" data-module="Button" data-wf--button--variant="base" href="#" class="btn w-inline-block m-none">
-                                    <div class="btn_text">
-                                        <div class="f-16 ls-08 caps w-500">Let's connect</div>
-                                        <div class="f-16 is-copy ls-08 caps w-500">Let's connect</div>
-                                    </div>
-                                </a>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                 </div>
@@ -1239,13 +1212,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <a data-popup-trigger="true" data-scroll="false" data-module="Button" data-wf--button--variant="pink" href="#" class="btn w-variant-a1d1845a-9c49-2cf2-e5b7-51f2255feb50 w-inline-block">
-                                <div class="btn_text">
-                                    <div class="f-16 ls-08 caps w-500">LET’S CONNECT</div>
-                                    <div class="f-16 is-copy ls-08 caps w-500">LET’S CONNECT</div>
-                                </div>
-                            </a>
+                            </div>                            
                         </div>
                     </div>
                 </div>
@@ -1279,7 +1246,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                     </div>
                 </div>
             </section>
-            <section class="section section-space">
+            <section id="contact" class="section section-space">
                 <div class="container">
                     <div class="booking">
                         <div class="_w-full  ">
@@ -1307,7 +1274,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async () =>
                         <!-- Cal inline embed code begins -->
                         <div data-hide-event-type-details="true" data-module="Calendar" data-cal-link="nextera-studios/30min" data-theme="dark" data-layout="month_view" class="booking_form"></div>
 
-                        Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+                        
                         </script>
   <!-- Cal inline embed code ends -->
                     </div>
