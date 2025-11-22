@@ -1275,7 +1275,7 @@ document.getElementById('triggerWorkflow').addEventListener('click', async (even
                         <div data-hide-event-type-details="true" data-module="Calendar" data-cal-link="nextera-studios/30min" data-theme="dark" data-layout="month_view" class="booking_form"></div>
 
                         
-                        </script>
+                        
   <!-- Cal inline embed code ends -->
                     </div>
                 </div>
@@ -1424,8 +1424,12 @@ document.getElementById('triggerWorkflow').addEventListener('click', async (even
     <script src="https://unpkg.com/@vapi-ai/web/dist/widget.umd.js" async></script>
     <style>
       vapi-widget {
-        position: relative;
+        /* Change this from relative to fixed */
+        position: fixed; 
         z-index: 999999 !important;
+        /* Ensure it stays strictly in the corner */
+        bottom: 20px;
+        right: 20px;
       }
     </style>
 
