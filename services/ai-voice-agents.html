@@ -1452,7 +1452,7 @@
     .tech-stack-track {
       display: inline-flex;
       width: max-content;
-      animation: scroll-left 80s linear infinite; /* Slower speed for long list */
+      animation: scroll-left 60s linear infinite; 
     }
 
     /* Logo Groups */
@@ -1460,16 +1460,16 @@
       display: flex;
       align-items: center;
       gap: 60px; /* Spacing between logos */
-      padding-right: 60px; /* Spacing between groups */
+      padding-right: 60px;
     }
 
     /* Logo Styling */
     .tech-stack-logo {
-      height: 35px; /* Fixed height for consistency */
+      height: 32px; /* Fixed height */
       width: auto;
-      max-width: 180px; /* Prevents huge logos */
+      max-width: 160px;
       object-fit: contain;
-      opacity: 0.8;
+      opacity: 0.9;
       transition: opacity 0.3s ease;
       display: block;
       
@@ -1482,7 +1482,6 @@
       opacity: 1;
     }
 
-    /* Animation: Moves exactly half the width */
     @keyframes scroll-left {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); } 
@@ -1490,7 +1489,7 @@
 
     /* Mobile Adjustment */
     @media screen and (max-width: 768px) {
-      .tech-stack-logo { height: 26px; }
+      .tech-stack-logo { height: 24px; }
       .logo-group { gap: 40px; padding-right: 40px; }
     }
   </style>
@@ -1498,70 +1497,58 @@
   <div class="tech-stack-marquee">
     <div class="tech-stack-track">
       
-      <!-- GROUP 1: The Master List -->
+      <!-- GROUP 1 -->
       <div class="logo-group">
-        <!-- CRM & Automation -->
-        <img src="https://logo.clearbit.com/salesforce.com" data-domain="salesforce.com" alt="Salesforce" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/hubspot.com" data-domain="hubspot.com" alt="HubSpot" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/gohighlevel.com" data-domain="gohighlevel.com" alt="HighLevel" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/zoho.com" data-domain="zoho.com" alt="Zoho" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/pipedrive.com" data-domain="pipedrive.com" alt="Pipedrive" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
+        <!-- Major Tech (High Reliability SVGs) -->
+        <img src="https://www.vectorlogo.zone/logos/salesforce/salesforce-ar21.svg" alt="Salesforce" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/hubspot/hubspot-ar21.svg" alt="HubSpot" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/slack/slack-ar21.svg" alt="Slack" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/zapier/zapier-ar21.svg" alt="Zapier" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/google/google-ar21.svg" alt="Google" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/stripe/stripe-ar21.svg" alt="Stripe" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/zendesk/zendesk-ar21.svg" alt="Zendesk" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/intercom/intercom-ar21.svg" alt="Intercom" class="tech-stack-logo">
         
-        <!-- Service & Field -->
-        <img src="https://logo.clearbit.com/servicetitan.com" data-domain="servicetitan.com" alt="ServiceTitan" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/housecallpro.com" data-domain="housecallpro.com" alt="Housecall Pro" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/getjobber.com" data-domain="getjobber.com" alt="Jobber" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        
-        <!-- Legal -->
-        <img src="https://logo.clearbit.com/clio.com" data-domain="clio.com" alt="Clio" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/lawmatics.com" data-domain="lawmatics.com" alt="Lawmatics" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/mycase.com" data-domain="mycase.com" alt="MyCase" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
+        <img src="https://www.vectorlogo.zone/logos/zoho/zoho-ar21.svg" alt="Zoho" class="tech-stack-logo">
 
-        <!-- Communication & Booking -->
-        <img src="https://logo.clearbit.com/calendly.com" data-domain="calendly.com" alt="Calendly" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/slack.com" data-domain="slack.com" alt="Slack" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/intercom.com" data-domain="intercom.com" alt="Intercom" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/zendesk.com" data-domain="zendesk.com" alt="Zendesk" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-
-        <!-- Tools & Tech -->
-        <img src="https://logo.clearbit.com/zapier.com" data-domain="zapier.com" alt="Zapier" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/make.com" data-domain="make.com" alt="Make" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/stripe.com" data-domain="stripe.com" alt="Stripe" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/monday.com" data-domain="monday.com" alt="Monday" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/google.com" data-domain="google.com" alt="Google" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
+        <!-- Niche / Industry Specific (Using Brandfetch as Backup) -->
+        <img src="https://cdn.brandfetch.io/servicetitan.com/logo" alt="ServiceTitan" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/housecallpro.com/logo" alt="Housecall Pro" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/calendly.com/logo" alt="Calendly" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/getjobber.com/logo" alt="Jobber" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/clio.com/logo" alt="Clio" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/lawmatics.com/logo" alt="Lawmatics" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/mycase.com/logo" alt="MyCase" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/gohighlevel.com/logo" alt="HighLevel" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/make.com/logo" alt="Make" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/monday.com/logo" alt="Monday" class="tech-stack-logo">
       </div>
 
-      <!-- GROUP 2: The Duplicate (Must be identical to Group 1) -->
+      <!-- GROUP 2 (Duplicate for Infinite Loop) -->
       <div class="logo-group">
-        <!-- CRM & Automation -->
-        <img src="https://logo.clearbit.com/salesforce.com" data-domain="salesforce.com" alt="Salesforce" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/hubspot.com" data-domain="hubspot.com" alt="HubSpot" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/gohighlevel.com" data-domain="gohighlevel.com" alt="HighLevel" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/zoho.com" data-domain="zoho.com" alt="Zoho" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/pipedrive.com" data-domain="pipedrive.com" alt="Pipedrive" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        
-        <!-- Service & Field -->
-        <img src="https://logo.clearbit.com/servicetitan.com" data-domain="servicetitan.com" alt="ServiceTitan" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/housecallpro.com" data-domain="housecallpro.com" alt="Housecall Pro" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/getjobber.com" data-domain="getjobber.com" alt="Jobber" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        
-        <!-- Legal -->
-        <img src="https://logo.clearbit.com/clio.com" data-domain="clio.com" alt="Clio" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/lawmatics.com" data-domain="lawmatics.com" alt="Lawmatics" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/mycase.com" data-domain="mycase.com" alt="MyCase" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
+        <!-- Major Tech -->
+        <img src="https://www.vectorlogo.zone/logos/salesforce/salesforce-ar21.svg" alt="Salesforce" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/hubspot/hubspot-ar21.svg" alt="HubSpot" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/slack/slack-ar21.svg" alt="Slack" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/zapier/zapier-ar21.svg" alt="Zapier" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/google/google-ar21.svg" alt="Google" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/stripe/stripe-ar21.svg" alt="Stripe" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/zendesk/zendesk-ar21.svg" alt="Zendesk" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/intercom/intercom-ar21.svg" alt="Intercom" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/pipedrive/pipedrive-ar21.svg" alt="Pipedrive" class="tech-stack-logo">
+        <img src="https://www.vectorlogo.zone/logos/zoho/zoho-ar21.svg" alt="Zoho" class="tech-stack-logo">
 
-        <!-- Communication & Booking -->
-        <img src="https://logo.clearbit.com/calendly.com" data-domain="calendly.com" alt="Calendly" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/slack.com" data-domain="slack.com" alt="Slack" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/intercom.com" data-domain="intercom.com" alt="Intercom" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/zendesk.com" data-domain="zendesk.com" alt="Zendesk" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-
-        <!-- Tools & Tech -->
-        <img src="https://logo.clearbit.com/zapier.com" data-domain="zapier.com" alt="Zapier" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/make.com" data-domain="make.com" alt="Make" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/stripe.com" data-domain="stripe.com" alt="Stripe" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/monday.com" data-domain="monday.com" alt="Monday" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
-        <img src="https://logo.clearbit.com/google.com" data-domain="google.com" alt="Google" class="tech-stack-logo" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://cdn.brandfetch.io/'+this.getAttribute('data-domain')+'/w/400/h/100';">
+        <!-- Niche / Industry Specific -->
+        <img src="https://cdn.brandfetch.io/servicetitan.com/logo" alt="ServiceTitan" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/housecallpro.com/logo" alt="Housecall Pro" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/calendly.com/logo" alt="Calendly" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/getjobber.com/logo" alt="Jobber" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/clio.com/logo" alt="Clio" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/lawmatics.com/logo" alt="Lawmatics" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/mycase.com/logo" alt="MyCase" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/gohighlevel.com/logo" alt="HighLevel" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/make.com/logo" alt="Make" class="tech-stack-logo">
+        <img src="https://cdn.brandfetch.io/monday.com/logo" alt="Monday" class="tech-stack-logo">
       </div>
 
     </div>
