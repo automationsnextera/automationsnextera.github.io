@@ -871,7 +871,7 @@
   <style>
     :root {
       --player-bg: #000000; 
-      --player-accent: #FF76A2;
+      --player-accent: #FF76A2; /* The Purple/Pink Color */
       --player-text: #ffffff;
       --player-white: #ffffff;
     }
@@ -884,6 +884,7 @@
       margin: 0 auto;
       box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       font-family: system-ui, -apple-system, sans-serif;
+      overflow: hidden; 
     }
 
     /* Controls */
@@ -892,6 +893,8 @@
       align-items: center;
       gap: 16px;
       margin-bottom: 20px;
+      position: relative; 
+      z-index: 5;
     }
 
     .play-btn-round {
@@ -907,6 +910,7 @@
       color: white;
       transition: transform 0.2s;
       flex-shrink: 0;
+      touch-action: manipulation; 
     }
     .play-btn-round:hover { transform: scale(1.05); }
 
@@ -914,17 +918,21 @@
       flex-grow: 1;
       display: flex;
       align-items: center;
+      padding: 10px 0; 
     }
 
     .audio-slider {
       width: 100%;
       -webkit-appearance: none;
       height: 6px;
-      background: #e0dcd5;
+      background: #333;
       border-radius: 5px;
       outline: none;
       cursor: pointer;
+      position: relative;
+      z-index: 10;
     }
+    
     .audio-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 16px;
@@ -932,7 +940,9 @@
       background: var(--player-accent);
       border-radius: 50%;
       cursor: pointer;
+      transition: transform 0.1s;
     }
+    .audio-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
     .time-text {
       font-size: 14px;
@@ -941,6 +951,7 @@
       text-align: right;
       font-variant-numeric: tabular-nums;
       margin-left: 12px;
+      user-select: none;
     }
 
     .reset-btn-round {
@@ -956,6 +967,7 @@
       color: #FF76A2;
       flex-shrink: 0;
       margin-left: 8px;
+      touch-action: manipulation;
     }
 
     /* Visual Wrapper */
@@ -965,16 +977,15 @@
       border-radius: 16px;
       overflow: hidden;
       aspect-ratio: 16/9;
-      background-color: #000;
+      background-color: #111; 
       z-index: 1;
+      transform: translateZ(0); 
     }
 
-    /* The Background Video */
-    .visual-image {
+    /* THE CANVAS WAVEFORM */
+    #waveformCanvas {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      opacity: 0.8;
       display: block;
     }
 
@@ -1023,7 +1034,6 @@
     }
     .center-play-overlay:hover { transform: translate(-50%, -50%) scale(1.1); }
     
-    /* Hide center button when playing */
     .visual-wrapper.is-active .center-play-overlay { 
       opacity: 0; 
       pointer-events: none; 
@@ -1037,24 +1047,40 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 24px;
+      position: relative;
+      z-index: 5;
     }
 
     .ind-tab {
       padding: 10px 24px;
       border-radius: 30px;
-      border: 2px solid #eee;
+      border: 2px solid #333;
       font-size: 15px;
       font-weight: 500;
       cursor: pointer;
       background-color: #000000; 
       color: #FF76A2;
       transition: all 0.2s;
+      touch-action: manipulation;
     }
 
     .ind-tab.active {
       background-color: var(--player-accent);
       color: white;
       border-color: var(--player-accent);
+    }
+
+    /* --- MOBILE RESPONSIVE FIXES --- */
+    @media (max-width: 600px) {
+      .audio-player-card { padding: 16px; border-radius: 16px; }
+      .controls-top { gap: 8px; flex-wrap: wrap; justify-content: space-between; }
+      .play-btn-round { width: 44px; height: 44px; }
+      .progress-bar-container { min-width: 120px; }
+      .audio-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
+      .audio-slider { height: 8px; }
+      .time-text { font-size: 12px; margin-left: 8px; }
+      .reset-btn-round { width: 36px; height: 36px; margin-left: 4px; }
+      .ind-tab { padding: 8px 16px; font-size: 13px; flex-grow: 1; text-align: center; }
     }
   </style>
 
@@ -1071,7 +1097,7 @@
         </button>
 
         <div class="progress-bar-container">
-          <input type="range" class="audio-slider" id="audioSeeker" value="0" max="100">
+          <input type="range" class="audio-slider" id="audioSeeker" value="0" max="100" aria-label="Seek audio">
         </div>
         
         <div class="time-text" id="timeDisplay">0:00 / 0:00</div>
@@ -1085,22 +1111,10 @@
       <div class="visual-wrapper" id="visualWrapper">
         <div class="badges-container">
           <div class="status-badge badge-ai">AI Agent</div>
-          
         </div>
 
-        <!-- SHARED WAVEFORM VIDEO -->
-        <video 
-            class="visual-image" 
-            id="waveformVideo" 
-            muted 
-            loop 
-            playsinline 
-            
-        >
-            <source src="../assets/videos/305223_small.mp4" type="video/mp4">
-            <track kind="descriptions" srclang="en" label="Video description">
-            Your browser does not support the video tag.
-        </video>
+        <!-- CANVAS WAVEFORM -->
+        <canvas id="waveformCanvas"></canvas>
         
         <!-- Center Play Overlay -->
         <div class="center-play-overlay" id="centerPlayBtn">
@@ -1130,7 +1144,6 @@
 
     /* --- DOM ELEMENTS --- */
     const audioPlayer = document.getElementById('mainAudioPlayer');
-    const waveformVideo = document.getElementById('waveformVideo');
     const topBtn = document.getElementById('topPlayBtn');
     const centerBtn = document.getElementById('centerPlayBtn');
     const visualWrapper = document.getElementById('visualWrapper');
@@ -1143,28 +1156,109 @@
     const pauseIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 
     let isDragging = false;
+    let visualPlaying = false; 
 
-    /* --- LOGIC --- */
+    /* --- ADVANCED RANDOMIZED WAVEFORM LOGIC --- */
+    const canvas = document.getElementById('waveformCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Config
+    const lines = [
+      { color: '#FF76A2',               baseAmp: 30, speed: 0.05, freq: 0.01 },
+      { color: 'rgba(255, 118, 162, 0.6)', baseAmp: 25, speed: 0.03, freq: 0.015 },
+      { color: 'rgba(255, 118, 162, 0.3)', baseAmp: 40, speed: 0.02, freq: 0.008 }
+    ];
+
+    let time = 0;
+    let currentEnergy = 0;
+    let targetEnergy = 0;
+
+    function resizeCanvas() {
+      canvas.width = visualWrapper.clientWidth;
+      canvas.height = visualWrapper.clientHeight;
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); 
+
+    function animateWaveform() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const centerY = canvas.height / 2;
+      
+      // LOGIC: Randomize Target Energy
+      if (visualPlaying) {
+         // Random chance to change target energy to simulate speech patterns
+         if(Math.random() > 0.90) {
+             targetEnergy = Math.random() * 1.5 + 0.5; // Bursts between 0.5 and 2.0
+         }
+         // Decay target energy slowly to create pauses
+         targetEnergy *= 0.98;
+         if(targetEnergy < 0.5) targetEnergy = 0.5; // Minimum active energy
+      } else {
+         targetEnergy = 0.1; // Idle breathing
+      }
+
+      // Smoothly interpolate current energy towards target (Lerp)
+      currentEnergy += (targetEnergy - currentEnergy) * 0.1;
+
+      time += 0.15; // Global speed
+
+      lines.forEach((line, index) => {
+        ctx.beginPath();
+        ctx.strokeStyle = line.color;
+        ctx.lineWidth = 2;
+
+        for (let x = 0; x < canvas.width; x += 2) { // Optimization: skip pixels
+          
+          // Normalized X (-1 to 1) for center focus
+          const normX = (x / canvas.width) * 2 - 1;
+          const damping = Math.cos(normX * Math.PI / 2); // Taper edges
+          
+          // Multi-layered sine wave calculation for randomness
+          // Layer 1: Base wave
+          const y1 = Math.sin(x * line.freq + time * line.speed);
+          
+          // Layer 2: Interference wave (different freq)
+          const y2 = Math.sin(x * (line.freq * 2.5) - time * (line.speed * 1.5));
+          
+          // Layer 3: Noise wobble (simulates vocal grain)
+          const y3 = Math.sin(x * 0.05 + time * 0.5);
+
+          // Combine
+          const waveHeight = (y1 + y2 * 0.5 + y3 * 0.2);
+          
+          const y = centerY + waveHeight * (line.baseAmp * currentEnergy * damping);
+            
+          if(x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      });
+
+      requestAnimationFrame(animateWaveform);
+    }
+
+    // Start Loop
+    animateWaveform();
+
+
+    /* --- PLAYER LOGIC --- */
     function init() {
-      // Default Load
       selectIndustry('plumbing', document.querySelector('.ind-tab.active'), false);
     }
 
     function toggleAudio() {
       if (audioPlayer.paused) {
-        audioPlayer.play().then(() => {
-          // Sync Video: Play video when audio starts
-          waveformVideo.play();
-        }).catch(e => console.error("Playback failed:", e));
+        audioPlayer.play().catch(e => console.error("Playback failed:", e));
         setPlayingState(true);
       } else {
         audioPlayer.pause();
-        waveformVideo.pause(); // Sync Video: Pause video when audio stops
         setPlayingState(false);
       }
     }
 
     function setPlayingState(isPlaying) {
+      visualPlaying = isPlaying;
       if(isPlaying) {
         topBtn.innerHTML = pauseIcon;
         visualWrapper.classList.add('is-active');
@@ -1175,30 +1269,22 @@
     }
 
     window.selectIndustry = function(key, btn, autoPlay = true) {
-      // 1. Update Buttons
       document.querySelectorAll('.ind-tab').forEach(b => b.classList.remove('active'));
       if(btn) btn.classList.add('active');
 
-      // 2. Stop Everything
       audioPlayer.pause();
-      waveformVideo.pause(); 
       setPlayingState(false);
 
-      // 3. Swap Audio Source
       audioPlayer.src = industryData[key];
-
-      // 4. Reset UI
       seeker.value = 0;
       timeDisplay.innerText = "0:00 / 0:00";
 
-      // 5. Handle Duration Load
       audioPlayer.onloadedmetadata = () => {
         timeDisplay.innerText = `0:00 / ${formatTime(audioPlayer.duration)}`;
         if(autoPlay) toggleAudio();
       };
     };
 
-    // Helper: Progress Bar
     audioPlayer.addEventListener('timeupdate', () => {
       if(!isDragging) {
         const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
@@ -1207,14 +1293,11 @@
       }
     });
 
-    // Helper: When Audio Ends
     audioPlayer.addEventListener('ended', () => {
       setPlayingState(false);
-      waveformVideo.pause(); // Stop video when audio finishes
       seeker.value = 100;
     });
 
-    // Helper: Seek Logic
     seeker.addEventListener('input', () => {
       isDragging = true;
       const time = (seeker.value / 100) * audioPlayer.duration;
@@ -1240,7 +1323,6 @@
       return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
-    // Helper: Reset
     resetBtn.addEventListener('click', () => {
       audioPlayer.currentTime = 0;
       if(audioPlayer.paused) toggleAudio();
@@ -1249,7 +1331,6 @@
     topBtn.addEventListener('click', toggleAudio);
     centerBtn.addEventListener('click', toggleAudio);
 
-    // Initialize
     init();
 
   </script>
