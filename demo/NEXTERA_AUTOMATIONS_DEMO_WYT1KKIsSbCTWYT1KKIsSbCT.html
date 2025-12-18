@@ -118,6 +118,34 @@
             z-index: 0;
             mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 100%);
             -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 100%);
+        /* --- PASTE THIS INTO YOUR <style> BLOCK --- */
+
+/* Typography Utils */
+.rich-inherit, .rich-inherit :is(p, h1, h2, h3, h4, h5) { font-size: inherit; font-weight: inherit; letter-spacing: inherit; line-height: inherit; font-family: inherit; }
+.lh-120 { line-height: 1.2; }
+.w-500 { font-weight: 500; }
+.caps { text-transform: uppercase; }
+.f-14 { font-size: 0.875rem; }
+.f-24 { font-size: 1.5rem; }
+.col-grey { color: var(--color--grey); }
+.col-main { color: var(--color--white); }
+
+/* Spacing Utils */
+.mb-132 { margin-bottom: var(--size--132); }
+.sm-mb-48 { margin-bottom: var(--size--48); } /* Needs media query usually, but this helps */
+.mb-16 { margin-bottom: var(--size--16); }
+.gap-40 { gap: var(--size--40); }
+
+/* Flexbox Utils (Recreating what Webflow usually provides) */
+.v-flex-left-between { display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; }
+.v-flex-left-top { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+.footer_grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; width: 100%; }
+
+/* Mobile Responsive Fixes (Basic) */
+@media screen and (max-width: 991px) {
+    .footer_grid { grid-template-columns: 1fr; gap: 60px; }
+    .sm-hide { display: none; }
+}
         }
     </style>
 </head>
@@ -144,10 +172,7 @@
             </div>
 
             <!-- Visualizer -->
-            <div class="orb-wrapper" id="orbContainer">
-                <div class="orb-ring"></div>
-                <div class="orb"></div>
-            </div>
+            
 
             <!-- Call to Action Button -->
             <div class="btn w-variant-a1d1845a-9c49-2cf2-e5b7-51f2255feb50" id="talkBtn" style="cursor: pointer; min-width: 200px; text-align: center;">
@@ -168,7 +193,7 @@
                         <div>
                             <div class="logo">
                                 <div data-module="WordAnimation">
-                                    <img src="logo-white.svg" alt="Company Logo">
+                                    <img src="automationsnextera_black.png" alt="Company Logo">
                                 </div>
                             </div>
                         </div>
