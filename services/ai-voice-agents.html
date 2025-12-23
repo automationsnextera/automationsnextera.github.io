@@ -1092,7 +1092,7 @@
 
       <!-- Top Controls -->
       <div class="controls-top">
-        <button class="play-btn-round" id="topPlayBtn" aria-label="Play">
+        <button class="play-btn-round" id="topPlayBtn" type="button" aria-label="Play">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
 
@@ -1102,7 +1102,7 @@
         
         <div class="time-text" id="timeDisplay">0:00 / 0:00</div>
         
-        <button class="reset-btn-round" id="resetBtn" aria-label="Reset">
+        <button class="reset-btn-round" id="resetBtn" type="button" aria-label="Reset">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74-2.74L3 12"/></svg>
         </button>
       </div>
@@ -1134,205 +1134,229 @@
   </div>
 
   <script>
-    /* --- DATA --- */
-    const industryData = {
-      plumbing: 'https://cdn.prod.website-files.com/67f98480f128c684f9864554/68e94f201a4ce420f9e49f19_AIR%20Demo_edited%20call-Danny%27s%20version_Mountain%20View%20Plumbing_10-09-2025.mp3',
-      law: 'https://cdn.prod.website-files.com/67f98480f128c684f9864554/68cb45a2853b334b4531ca95_AIR%20Demo_Hart%20and%20Sloan%20Injury%20Law_2025-09-16.mp3',
-      cyber: 'https://cdn.prod.website-files.com/5b15ca3d02dd414c89ecc3ed/68d333dfb44a04a53cf8c946_Demo_IT_Solutions.mp3',
-      cleaning: 'https://cdn.prod.website-files.com/68015bbeb5a11ceedc7b8650/68c1fdc1122c8b482a93839b_Demo_AIR_2025-09-10_PureShine-Cleaning_FINAL.mp3'
-    };
+    /* WRAPPED IN DOMContentLoaded TO ENSURE ELEMENTS EXIST */
+    document.addEventListener("DOMContentLoaded", function() {
 
-    /* --- DOM ELEMENTS --- */
-    const audioPlayer = document.getElementById('mainAudioPlayer');
-    const topBtn = document.getElementById('topPlayBtn');
-    const centerBtn = document.getElementById('centerPlayBtn');
-    const visualWrapper = document.getElementById('visualWrapper');
-    const seeker = document.getElementById('audioSeeker');
-    const timeDisplay = document.getElementById('timeDisplay');
-    const resetBtn = document.getElementById('resetBtn');
+      /* --- DATA --- */
+      const industryData = {
+        plumbing: 'https://cdn.prod.website-files.com/67f98480f128c684f9864554/68e94f201a4ce420f9e49f19_AIR%20Demo_edited%20call-Danny%27s%20version_Mountain%20View%20Plumbing_10-09-2025.mp3',
+        law: 'https://cdn.prod.website-files.com/67f98480f128c684f9864554/68cb45a2853b334b4531ca95_AIR%20Demo_Hart%20and%20Sloan%20Injury%20Law_2025-09-16.mp3',
+        cyber: 'https://cdn.prod.website-files.com/5b15ca3d02dd414c89ecc3ed/68d333dfb44a04a53cf8c946_Demo_IT_Solutions.mp3',
+        cleaning: 'https://cdn.prod.website-files.com/68015bbeb5a11ceedc7b8650/68c1fdc1122c8b482a93839b_Demo_AIR_2025-09-10_PureShine-Cleaning_FINAL.mp3'
+      };
 
-    // SVGs
-    const playIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    const pauseIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+      /* --- DOM ELEMENTS --- */
+      const audioPlayer = document.getElementById('mainAudioPlayer');
+      const topBtn = document.getElementById('topPlayBtn');
+      const centerBtn = document.getElementById('centerPlayBtn');
+      const visualWrapper = document.getElementById('visualWrapper');
+      const seeker = document.getElementById('audioSeeker');
+      const timeDisplay = document.getElementById('timeDisplay');
+      const resetBtn = document.getElementById('resetBtn');
 
-    let isDragging = false;
-    let visualPlaying = false; 
-
-    /* --- ADVANCED RANDOMIZED WAVEFORM LOGIC --- */
-    const canvas = document.getElementById('waveformCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Config
-    const lines = [
-      { color: '#FF76A2',               baseAmp: 30, speed: 0.05, freq: 0.01 },
-      { color: 'rgba(255, 118, 162, 0.6)', baseAmp: 25, speed: 0.03, freq: 0.015 },
-      { color: 'rgba(255, 118, 162, 0.3)', baseAmp: 40, speed: 0.02, freq: 0.008 }
-    ];
-
-    let time = 0;
-    let currentEnergy = 0;
-    let targetEnergy = 0;
-
-    function resizeCanvas() {
-      canvas.width = visualWrapper.clientWidth;
-      canvas.height = visualWrapper.clientHeight;
-    }
-    
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas(); 
-
-    function animateWaveform() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const centerY = canvas.height / 2;
-      
-      // LOGIC: Randomize Target Energy
-      if (visualPlaying) {
-         // Random chance to change target energy to simulate speech patterns
-         if(Math.random() > 0.90) {
-             targetEnergy = Math.random() * 1.5 + 0.5; // Bursts between 0.5 and 2.0
-         }
-         // Decay target energy slowly to create pauses
-         targetEnergy *= 0.98;
-         if(targetEnergy < 0.5) targetEnergy = 0.5; // Minimum active energy
-      } else {
-         targetEnergy = 0.1; // Idle breathing
+      // Check if elements were found (Debug check)
+      if (!audioPlayer || !topBtn || !centerBtn) {
+        console.error("Audio Player elements not found. Script placement might be incorrect.");
+        return;
       }
 
-      // Smoothly interpolate current energy towards target (Lerp)
-      currentEnergy += (targetEnergy - currentEnergy) * 0.1;
+      // SVGs
+      const playIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+      const pauseIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 
-      time += 0.15; // Global speed
+      let isDragging = false;
+      let visualPlaying = false; 
 
-      lines.forEach((line, index) => {
-        ctx.beginPath();
-        ctx.strokeStyle = line.color;
-        ctx.lineWidth = 2;
+      /* --- ADVANCED RANDOMIZED WAVEFORM LOGIC --- */
+      const canvas = document.getElementById('waveformCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      const lines = [
+        { color: '#FF76A2',               baseAmp: 30, speed: 0.05, freq: 0.01 },
+        { color: 'rgba(255, 118, 162, 0.6)', baseAmp: 25, speed: 0.03, freq: 0.015 },
+        { color: 'rgba(255, 118, 162, 0.3)', baseAmp: 40, speed: 0.02, freq: 0.008 }
+      ];
 
-        for (let x = 0; x < canvas.width; x += 2) { // Optimization: skip pixels
-          
-          // Normalized X (-1 to 1) for center focus
-          const normX = (x / canvas.width) * 2 - 1;
-          const damping = Math.cos(normX * Math.PI / 2); // Taper edges
-          
-          // Multi-layered sine wave calculation for randomness
-          // Layer 1: Base wave
-          const y1 = Math.sin(x * line.freq + time * line.speed);
-          
-          // Layer 2: Interference wave (different freq)
-          const y2 = Math.sin(x * (line.freq * 2.5) - time * (line.speed * 1.5));
-          
-          // Layer 3: Noise wobble (simulates vocal grain)
-          const y3 = Math.sin(x * 0.05 + time * 0.5);
+      let time = 0;
+      let currentEnergy = 0;
+      let targetEnergy = 0;
 
-          // Combine
-          const waveHeight = (y1 + y2 * 0.5 + y3 * 0.2);
-          
-          const y = centerY + waveHeight * (line.baseAmp * currentEnergy * damping);
-            
-          if(x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+      function resizeCanvas() {
+        if(visualWrapper) {
+          canvas.width = visualWrapper.clientWidth;
+          canvas.height = visualWrapper.clientHeight;
         }
-        ctx.stroke();
-      });
+      }
+      
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas(); 
 
-      requestAnimationFrame(animateWaveform);
-    }
+      function animateWaveform() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const centerY = canvas.height / 2;
+        
+        if (visualPlaying) {
+          if(Math.random() > 0.90) {
+              targetEnergy = Math.random() * 1.5 + 0.5; 
+          }
+          targetEnergy *= 0.98;
+          if(targetEnergy < 0.5) targetEnergy = 0.5;
+        } else {
+          targetEnergy = 0.1;
+        }
 
-    // Start Loop
-    animateWaveform();
+        currentEnergy += (targetEnergy - currentEnergy) * 0.1;
+        time += 0.15;
 
+        lines.forEach((line, index) => {
+          ctx.beginPath();
+          ctx.strokeStyle = line.color;
+          ctx.lineWidth = 2;
 
-    /* --- PLAYER LOGIC --- */
-    function init() {
-      selectIndustry('plumbing', document.querySelector('.ind-tab.active'), false);
-    }
+          for (let x = 0; x < canvas.width; x += 2) { 
+            const normX = (x / canvas.width) * 2 - 1;
+            const damping = Math.cos(normX * Math.PI / 2);
+            
+            const y1 = Math.sin(x * line.freq + time * line.speed);
+            const y2 = Math.sin(x * (line.freq * 2.5) - time * (line.speed * 1.5));
+            const y3 = Math.sin(x * 0.05 + time * 0.5);
 
-    function toggleAudio() {
-      if (audioPlayer.paused) {
-        audioPlayer.play().catch(e => console.error("Playback failed:", e));
-        setPlayingState(true);
-      } else {
+            const waveHeight = (y1 + y2 * 0.5 + y3 * 0.2);
+            const y = centerY + waveHeight * (line.baseAmp * currentEnergy * damping);
+              
+            if(x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(animateWaveform);
+      }
+
+      animateWaveform();
+
+      /* --- PLAYER LOGIC --- */
+      function init() {
+        // Initialize with first tab without playing
+        const firstTab = document.querySelector('.ind-tab.active');
+        if (firstTab) {
+            selectIndustry('plumbing', firstTab, false);
+        }
+      }
+
+      function toggleAudio() {
+        if (audioPlayer.paused) {
+          const playPromise = audioPlayer.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                setPlayingState(true);
+              })
+              .catch(error => {
+                console.error("Playback failed. Check audio URL.", error);
+                setPlayingState(false);
+              });
+          }
+        } else {
+          audioPlayer.pause();
+          setPlayingState(false);
+        }
+      }
+
+      function setPlayingState(isPlaying) {
+        visualPlaying = isPlaying;
+        if(isPlaying) {
+          topBtn.innerHTML = pauseIcon;
+          visualWrapper.classList.add('is-active');
+        } else {
+          topBtn.innerHTML = playIcon;
+          visualWrapper.classList.remove('is-active');
+        }
+      }
+
+      // Expose selectIndustry to global window so HTML onclick works
+      window.selectIndustry = function(key, btn, autoPlay = true) {
+        document.querySelectorAll('.ind-tab').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+
         audioPlayer.pause();
         setPlayingState(false);
-      }
-    }
 
-    function setPlayingState(isPlaying) {
-      visualPlaying = isPlaying;
-      if(isPlaying) {
-        topBtn.innerHTML = pauseIcon;
-        visualWrapper.classList.add('is-active');
-      } else {
-        topBtn.innerHTML = playIcon;
-        visualWrapper.classList.remove('is-active');
-      }
-    }
+        if (industryData[key]) {
+            audioPlayer.src = industryData[key];
+        } else {
+            console.error("Audio URL not found for:", key);
+            return;
+        }
+        
+        seeker.value = 0;
+        timeDisplay.innerText = "0:00 / 0:00";
 
-    window.selectIndustry = function(key, btn, autoPlay = true) {
-      document.querySelectorAll('.ind-tab').forEach(b => b.classList.remove('active'));
-      if(btn) btn.classList.add('active');
-
-      audioPlayer.pause();
-      setPlayingState(false);
-
-      audioPlayer.src = industryData[key];
-      seeker.value = 0;
-      timeDisplay.innerText = "0:00 / 0:00";
-
-      audioPlayer.onloadedmetadata = () => {
-        timeDisplay.innerText = `0:00 / ${formatTime(audioPlayer.duration)}`;
-        if(autoPlay) toggleAudio();
+        // Handle Metadata load
+        audioPlayer.onloadedmetadata = () => {
+          updateTimeDisplay(); // Update immediately on load
+          if(autoPlay) toggleAudio();
+        };
       };
-    };
 
-    audioPlayer.addEventListener('timeupdate', () => {
-      if(!isDragging) {
-        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        seeker.value = percent || 0;
-        updateTimeDisplay();
+      audioPlayer.addEventListener('timeupdate', () => {
+        if(!isDragging && audioPlayer.duration) {
+          const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+          seeker.value = percent || 0;
+          updateTimeDisplay();
+        }
+      });
+
+      audioPlayer.addEventListener('ended', () => {
+        setPlayingState(false);
+        seeker.value = 100;
+      });
+
+      audioPlayer.addEventListener('error', (e) => {
+          console.error("Audio Error:", e);
+          setPlayingState(false);
+      });
+
+      seeker.addEventListener('input', () => {
+        isDragging = true;
+        if (audioPlayer.duration) {
+             const time = (seeker.value / 100) * audioPlayer.duration;
+             timeDisplay.innerText = `${formatTime(time)} / ${formatTime(audioPlayer.duration)}`;
+        }
+      });
+
+      seeker.addEventListener('change', () => {
+        isDragging = false;
+        if (audioPlayer.duration) {
+            const time = (seeker.value / 100) * audioPlayer.duration;
+            audioPlayer.currentTime = time;
+        }
+      });
+
+      function updateTimeDisplay() {
+        const current = audioPlayer.currentTime || 0;
+        const total = audioPlayer.duration || 0;
+        timeDisplay.innerText = `${formatTime(current)} / ${formatTime(total)}`;
       }
+
+      function formatTime(seconds) {
+        if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+      }
+
+      resetBtn.addEventListener('click', () => {
+        audioPlayer.currentTime = 0;
+        if(audioPlayer.paused) toggleAudio();
+      });
+
+      topBtn.addEventListener('click', toggleAudio);
+      centerBtn.addEventListener('click', toggleAudio);
+
+      init();
+
     });
-
-    audioPlayer.addEventListener('ended', () => {
-      setPlayingState(false);
-      seeker.value = 100;
-    });
-
-    seeker.addEventListener('input', () => {
-      isDragging = true;
-      const time = (seeker.value / 100) * audioPlayer.duration;
-      timeDisplay.innerText = `${formatTime(time)} / ${formatTime(audioPlayer.duration)}`;
-    });
-
-    seeker.addEventListener('change', () => {
-      isDragging = false;
-      const time = (seeker.value / 100) * audioPlayer.duration;
-      audioPlayer.currentTime = time;
-    });
-
-    function updateTimeDisplay() {
-      const current = audioPlayer.currentTime;
-      const total = audioPlayer.duration || 0;
-      timeDisplay.innerText = `${formatTime(current)} / ${formatTime(total)}`;
-    }
-
-    function formatTime(seconds) {
-      if (isNaN(seconds)) return "0:00";
-      const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60);
-      return `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-
-    resetBtn.addEventListener('click', () => {
-      audioPlayer.currentTime = 0;
-      if(audioPlayer.paused) toggleAudio();
-    });
-
-    topBtn.addEventListener('click', toggleAudio);
-    centerBtn.addEventListener('click', toggleAudio);
-
-    init();
-
   </script>
 </section>
             <section class="section section-space">
