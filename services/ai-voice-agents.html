@@ -865,498 +865,372 @@
                     </div>
                 </div>
             </section>
-           <section id="live-demo" class="section-audio-demo" style="background-color: transparent; padding: 40px 0;">
-  
-  <!-- CSS Styles -->
-  <style>
-    :root {
-      --player-bg: #000000; 
-      --player-accent: #FF76A2; /* The Purple/Pink Color */
-      --player-text: #ffffff;
-      --player-white: #ffffff;
-    }
 
-    .audio-player-card {
-      background-color: var(--player-bg);
-      border-radius: 24px;
-      padding: 24px;
-      max-width: 800px;
-      margin: 0 auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      font-family: system-ui, -apple-system, sans-serif;
-      overflow: hidden; 
-    }
+            <!-- Container for the player -->
+                <div id="audio-player-wrapper" style="width: 100%; height: 600px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);"></div>
 
-    /* Controls */
-    .controls-top {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-      position: relative; 
-      z-index: 5;
-    }
+                <script>
+                (function() {
+                var playerContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                <style>
+                    :root {
+                    --bg-color: #000000;
+                    --panel-bg: #000000;
+                    --border-color: rgba(255, 255, 255, 0.15);
+                    --accent: #FF76A2; 
+                    --text-main: #ffffff;
+                    --text-muted: #888888;
+                    }
+                    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+                    
+                    body {
+                    background-color: var(--bg-color);
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    height: 100vh;
+                    width: 100vw;
+                    overflow: hidden;
+                    color: var(--text-main);
+                    display: flex;
+                    flex-direction: column;
+                    }
 
-    .play-btn-round {
-      width: 48px;
-      height: 48px;
-      background-color: var(--player-accent);
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: white;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-      touch-action: manipulation; 
-    }
-    .play-btn-round:hover { transform: scale(1.05); }
+                    /* --- VISUALIZER (Top 60%) --- */
+                    .visualizer-container {
+                    flex: 1;
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 70%);
+                    overflow: hidden;
+                    }
+                    canvas { width: 100%; height: 100%; display: block; }
 
-    .progress-bar-container {
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      padding: 10px 0; 
-    }
+                    /* Badge */
+                    .status-badge {
+                    position: absolute;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0,0,0,0.6);
+                    border: 1px solid var(--border-color);
+                    backdrop-filter: blur(4px);
+                    padding: 6px 14px;
+                    border-radius: 30px;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    z-index: 10;
+                    color: white;
+                    pointer-events: none;
+                    }
+                    .status-dot {
+                    width: 8px; height: 8px; background-color: var(--accent); border-radius: 50%;
+                    box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite ease-in-out;
+                    }
 
-    .audio-slider {
-      width: 100%;
-      -webkit-appearance: none;
-      height: 6px;
-      background: #333;
-      border-radius: 5px;
-      outline: none;
-      cursor: pointer;
-      position: relative;
-      z-index: 10;
-    }
-    
-    .audio-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      background: var(--player-accent);
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-    .audio-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+                    /* Center Play Button */
+                    .center-play {
+                    position: absolute;
+                    width: 72px; height: 72px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.1);
+                    border: 1px solid rgba(255,255,255,0.3);
+                    backdrop-filter: blur(5px);
+                    display: flex; align-items: center; justify-content: center;
+                    cursor: pointer; transition: all 0.3s; z-index: 20;
+                    }
+                    .center-play:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+                    .center-play svg { width: 28px; height: 28px; fill: white; margin-left: 4px; }
+                    .is-playing .center-play { opacity: 0; transform: scale(0.5); pointer-events: none; }
+                    
+                    /* --- CONTROLS (Bottom) --- */
+                    .controls-container {
+                    background-color: var(--panel-bg);
+                    border-top: 1px solid var(--border-color);
+                    padding: 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    z-index: 30;
+                    width: 100%;
+                    }
 
-    .time-text {
-      font-size: 14px;
-      color: #ffffff;
-      min-width: 85px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      margin-left: 12px;
-      user-select: none;
-    }
+                    /* SCROLLABLE TABS LOGIC */
+                    .tabs-wrapper {
+                    display: flex;
+                    gap: 12px;
+                    width: 100%;
+                    overflow-x: auto; /* Enables horizontal scroll */
+                    padding-bottom: 4px; /* Space for scrollbar */
+                    padding-right: 20px; /* Padding end so last item isn't cut off */
+                    
+                    /* Hide scrollbar visually but keep functionality */
+                    scrollbar-width: none; 
+                    -ms-overflow-style: none;
+                    
+                    /* Fade out effect on the right */
+                    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+                    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+                    }
+                    .tabs-wrapper::-webkit-scrollbar { display: none; }
 
-    .reset-btn-round {
-      background: none;
-      border: 3px solid #ffffff;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: #FF76A2;
-      flex-shrink: 0;
-      margin-left: 8px;
-      touch-action: manipulation;
-    }
+                    .tab-btn {
+                    background: transparent;
+                    border: 1px solid var(--border-color);
+                    color: var(--text-muted);
+                    padding: 10px 20px;
+                    border-radius: 100px;
+                    white-space: nowrap; /* Forces text to stay on one line */
+                    flex-shrink: 0;      /* Prevents button from getting squished */
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                    }
+                    .tab-btn:hover { border-color: #fff; color: #fff; }
+                    .tab-btn.active {
+                    background: var(--accent);
+                    border-color: var(--accent);
+                    color: #fff;
+                    }
 
-    /* Visual Wrapper */
-    .visual-wrapper {
-      position: relative;
-      width: 100%;
-      border-radius: 16px;
-      overflow: hidden;
-      aspect-ratio: 16/9;
-      background-color: #111; 
-      z-index: 1;
-      transform: translateZ(0); 
-    }
+                    /* Player Row */
+                    .player-row { display: flex; align-items: center; gap: 16px; }
+                    
+                    .play-pause-btn {
+                    background: none; border: none; color: white; cursor: pointer;
+                    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+                    display: flex; align-items: center; justify-content: center;
+                    }
+                    .play-pause-btn:hover { background: rgba(255,255,255,0.1); }
+                    .play-pause-btn svg { width: 24px; height: 24px; fill: currentColor; }
 
-    /* THE CANVAS WAVEFORM */
-    #waveformCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+                    .progress-wrapper {
+                    flex-grow: 1; position: relative; height: 30px; display: flex; align-items: center;
+                    }
+                    input[type=range] {
+                    -webkit-appearance: none; width: 100%; background: transparent; z-index: 5; cursor: pointer; margin: 0;
+                    }
+                    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #333; border-radius: 2px; }
+                    input[type=range]::-webkit-slider-thumb {
+                    -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: #fff; margin-top: -5px; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                    }
+                    .progress-fill {
+                    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+                    height: 4px; background: var(--accent); border-radius: 2px; pointer-events: none; width: 0%;
+                    }
+                    .time-display {
+                    font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 50px; text-align: right;
+                    }
 
-    /* Badges */
-    .badges-container {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      justify-content: space-between;
-      z-index: 10;
-      pointer-events: none;
-    }
+                    @keyframes pulse {
+                    0% { opacity: 1; box-shadow: 0 0 0px var(--accent); }
+                    50% { opacity: 0.6; box-shadow: 0 0 10px var(--accent); }
+                    100% { opacity: 1; box-shadow: 0 0 0px var(--accent); }
+                    }
 
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 14px;
-    }
+                    @media (max-width: 480px) {
+                    .controls-container { padding: 16px; gap: 16px; }
+                    .tab-btn { padding: 8px 16px; font-size: 13px; }
+                    .center-play { width: 56px; height: 56px; }
+                    }
+                </style>
+                </head>
+                <body id="appBody">
+                
+                <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
+                
+                <div class="visualizer-container">
+                    <div class="status-badge"><div class="status-dot"></div><span>AI Agent</span></div>
+                    <canvas id="waveformCanvas"></canvas>
+                    <div class="center-play" id="centerPlayBtn">
+                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
 
-    .badge-ai { background-color: var(--player-accent); color: white; }
-    .badge-caller { background-color: var(--player-white); color: var(--player-text); }
+                <div class="controls-container">
+                    <!-- Scrollable Tabs Wrapper -->
+                    <div class="tabs-wrapper">
+                    <button class="tab-btn active" onclick="loadTrack('plumbing', this)">🔧 Plumbing</button>
+                    <button class="tab-btn" onclick="loadTrack('law', this)">⚖️ Law Firm</button>
+                    <button class="tab-btn" onclick="loadTrack('cyber', this)">🔒 Security</button>
+                    <button class="tab-btn" onclick="loadTrack('cleaning', this)">✨ Cleaning</button>
+                    </div>
 
-    /* Center Overlay */
-    .center-play-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 64px;
-      height: 64px;
-      background-color: var(--player-accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 4px solid rgba(255,255,255,0.3);
-      transition: all 0.2s;
-      z-index: 20;
-    }
-    .center-play-overlay:hover { transform: translate(-50%, -50%) scale(1.1); }
-    
-    .visual-wrapper.is-active .center-play-overlay { 
-      opacity: 0; 
-      pointer-events: none; 
-      transform: translate(-50%, -50%) scale(0.8);
-    }
+                    <div class="player-row">
+                    <button class="play-pause-btn" id="barPlayBtn">
+                        <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <div class="progress-wrapper">
+                        <div class="progress-fill" id="progFill"></div>
+                        <input type="range" id="seeker" value="0" max="100" step="0.1">
+                    </div>
+                    <div class="time-display" id="timer">0:00</div>
+                    </div>
+                </div>
 
-    /* Tabs */
-    .industry-tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-      position: relative;
-      z-index: 5;
-    }
+                <script>
+                    /* Data */
+                    const tracks = {
+                    plumbing: "https://cdn.prod.website-files.com/67f98480f128c684f9864554/68e94f201a4ce420f9e49f19_AIR%20Demo_edited%20call-Danny%27s%20version_Mountain%20View%20Plumbing_10-09-2025.mp3",
+                    law: "https://cdn.prod.website-files.com/67f98480f128c684f9864554/68cb45a2853b334b4531ca95_AIR%20Demo_Hart%20and%20Sloan%20Injury%20Law_2025-09-16.mp3",
+                    cyber: "https://cdn.prod.website-files.com/5b15ca3d02dd414c89ecc3ed/68d333dfb44a04a53cf8c946_Demo_IT_Solutions.mp3",
+                    cleaning: "https://cdn.prod.website-files.com/68015bbeb5a11ceedc7b8650/68c1fdc1122c8b482a93839b_Demo_AIR_2025-09-10_PureShine-Cleaning_FINAL.mp3"
+                    };
 
-    .ind-tab {
-      padding: 10px 24px;
-      border-radius: 30px;
-      border: 2px solid #333;
-      font-size: 15px;
-      font-weight: 500;
-      cursor: pointer;
-      background-color: #000000; 
-      color: #FF76A2;
-      transition: all 0.2s;
-      touch-action: manipulation;
-    }
+                    /* Elements */
+                    const audio = document.getElementById("audioPlayer");
+                    const centerBtn = document.getElementById("centerPlayBtn");
+                    const barBtn = document.getElementById("barPlayBtn");
+                    const iconPlay = document.getElementById("iconPlay");
+                    const iconPause = document.getElementById("iconPause");
+                    const seeker = document.getElementById("seeker");
+                    const progFill = document.getElementById("progFill");
+                    const timer = document.getElementById("timer");
+                    const body = document.getElementById("appBody");
+                    const canvas = document.getElementById("waveformCanvas");
+                    const ctx = canvas.getContext("2d");
 
-    .ind-tab.active {
-      background-color: var(--player-accent);
-      color: white;
-      border-color: var(--player-accent);
-    }
+                    let isDragging = false;
+                    let isPlaying = false;
 
-    /* --- MOBILE RESPONSIVE FIXES --- */
-    @media (max-width: 600px) {
-      .audio-player-card { padding: 16px; border-radius: 16px; }
-      .controls-top { gap: 8px; flex-wrap: wrap; justify-content: space-between; }
-      .play-btn-round { width: 44px; height: 44px; }
-      .progress-bar-container { min-width: 120px; }
-      .audio-slider::-webkit-slider-thumb { width: 24px; height: 24px; }
-      .audio-slider { height: 8px; }
-      .time-text { font-size: 12px; margin-left: 8px; }
-      .reset-btn-round { width: 36px; height: 36px; margin-left: 4px; }
-      .ind-tab { padding: 8px 16px; font-size: 13px; flex-grow: 1; text-align: center; }
-    }
-  </style>
+                    // Init
+                    audio.src = tracks["plumbing"];
 
-  <div class="container">
-    <div class="audio-player-card">
-      
-      <!-- Hidden Audio Element -->
-      <audio id="mainAudioPlayer" preload="metadata"></audio>
+                    /* Logic */
+                    function toggleAudio() {
+                    if (audio.paused) { 
+                        audio.play().then(() => setPlayState(true)).catch(console.error); 
+                    } else { 
+                        audio.pause(); 
+                        setPlayState(false); 
+                    }
+                    }
 
-      <!-- Top Controls -->
-      <div class="controls-top">
-        <button class="play-btn-round" id="topPlayBtn" type="button" aria-label="Play">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+                    function setPlayState(p) {
+                    isPlaying = p;
+                    if(p) {
+                        body.classList.add("is-playing");
+                        iconPlay.style.display = "none";
+                        iconPause.style.display = "block";
+                    } else {
+                        body.classList.remove("is-playing");
+                        iconPlay.style.display = "block";
+                        iconPause.style.display = "none";
+                    }
+                    }
 
-        <div class="progress-bar-container">
-          <input type="range" class="audio-slider" id="audioSeeker" value="0" max="100" aria-label="Seek audio">
-        </div>
-        
-        <div class="time-text" id="timeDisplay">0:00 / 0:00</div>
-        
-        
-      </div>
+                    // Tab Click
+                    window.loadTrack = function(k, btn) {
+                    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    
+                    const prevPlaying = !audio.paused;
+                    
+                    audio.src = tracks[k];
+                    audio.currentTime = 0; 
+                    seeker.value = 0; 
+                    progFill.style.width = "0%";
+                    
+                    if (prevPlaying) {
+                        audio.play().then(() => setPlayState(true));
+                    } else {
+                        setPlayState(false);
+                    }
+                    };
 
-      <!-- Visual Area -->
-      <div class="visual-wrapper" id="visualWrapper">
-        <div class="badges-container">
-          <div class="status-badge badge-ai">AI Agent</div>
-        </div>
+                    centerBtn.onclick = toggleAudio;
+                    barBtn.onclick = toggleAudio;
 
-        <!-- CANVAS WAVEFORM -->
-        <canvas id="waveformCanvas"></canvas>
-        
-        <!-- Center Play Overlay -->
-        <div class="center-play-overlay" id="centerPlayBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-      </div>
+                    audio.ontimeupdate = () => {
+                    if (!isDragging && audio.duration) {
+                        const p = (audio.currentTime/audio.duration)*100;
+                        seeker.value = p; 
+                        progFill.style.width = p+"%";
+                        timer.innerText = fmt(audio.currentTime);
+                    }
+                    };
 
-      <!-- Tabs -->
-      <div class="industry-tabs">
-        <button class="ind-tab active" onclick="selectIndustry('plumbing', this)">Plumbing</button>
-        <button class="ind-tab" onclick="selectIndustry('law', this)">Law Firms</button>
-        <button class="ind-tab" onclick="selectIndustry('cyber', this)">Cyber Security</button>
-        <button class="ind-tab" onclick="selectIndustry('cleaning', this)">Cleaning</button>
-      </div>
+                    audio.onended = () => { setPlayState(false); seeker.value=0; progFill.style.width="0%"; };
+                    
+                    seeker.oninput = () => { 
+                    isDragging=true; 
+                    progFill.style.width=seeker.value+"%"; 
+                    timer.innerText=fmt((seeker.value/100)*audio.duration); 
+                    };
+                    
+                    seeker.onchange = () => { 
+                    isDragging=false; 
+                    audio.currentTime=(seeker.value/100)*audio.duration; 
+                    };
 
-    </div>
-  </div>
+                    function fmt(s) { 
+                    if(!s || isNaN(s)) return "0:00";
+                    const m=Math.floor(s/60), sc=Math.floor(s%60); 
+                    return m+":"+(sc<10?"0":"")+sc; 
+                    }
 
-  <script>
-    /* WRAPPED IN DOMContentLoaded TO ENSURE ELEMENTS EXIST */
-    document.addEventListener("DOMContentLoaded", function() {
+                    /* Waveform Animation */
+                    let frame = 0;
+                    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+                    window.addEventListener("resize", resize); resize();
 
-      /* --- DATA --- */
-      const industryData = {
-        plumbing: 'https://cdn.prod.website-files.com/67f98480f128c684f9864554/68e94f201a4ce420f9e49f19_AIR%20Demo_edited%20call-Danny%27s%20version_Mountain%20View%20Plumbing_10-09-2025.mp3',
-        law: 'https://cdn.prod.website-files.com/67f98480f128c684f9864554/68cb45a2853b334b4531ca95_AIR%20Demo_Hart%20and%20Sloan%20Injury%20Law_2025-09-16.mp3',
-        cyber: 'https://cdn.prod.website-files.com/5b15ca3d02dd414c89ecc3ed/68d333dfb44a04a53cf8c946_Demo_IT_Solutions.mp3',
-        cleaning: 'https://cdn.prod.website-files.com/68015bbeb5a11ceedc7b8650/68c1fdc1122c8b482a93839b_Demo_AIR_2025-09-10_PureShine-Cleaning_FINAL.mp3'
-      };
+                    function animate() {
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    const w=canvas.width, h=canvas.height, cy=h/2, amp=isPlaying?40:5;
+                    frame += isPlaying?1:0.2;
 
-      /* --- DOM ELEMENTS --- */
-      const audioPlayer = document.getElementById('mainAudioPlayer');
-      const topBtn = document.getElementById('topPlayBtn');
-      const centerBtn = document.getElementById('centerPlayBtn');
-      const visualWrapper = document.getElementById('visualWrapper');
-      const seeker = document.getElementById('audioSeeker');
-      const timeDisplay = document.getElementById('timeDisplay');
-      const resetBtn = document.getElementById('resetBtn');
+                    // Draw 3 layers
+                    [
+                        {c:"#FF76A2",o:1,off:0,f:0.01},
+                        {c:"#FF76A2",o:0.5,off:20,f:0.015},
+                        {c:"#FFFFFF",o:0.2,off:40,f:0.005}
+                    ].forEach(l => {
+                        ctx.beginPath(); ctx.strokeStyle=l.c; ctx.globalAlpha=l.o; ctx.lineWidth=2;
+                        for(let x=0;x<=w;x+=5) {
+                        const y = cy + Math.sin(x*l.f+frame*0.05+l.off)*amp*Math.sin(frame*0.01) + Math.cos(x*0.02-frame*0.02)*(amp*0.5);
+                        if(x===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+                        }
+                        ctx.stroke();
+                    });
+                    ctx.globalAlpha=1; requestAnimationFrame(animate);
+                    }
+                    animate();
+                <\/script>
+                </body>
+                </html>
+                `;
 
-      // Check if elements were found (Debug check)
-      if (!audioPlayer || !topBtn || !centerBtn) {
-        console.error("Audio Player elements not found. Script placement might be incorrect.");
-        return;
-      }
+                // Inject content
+                var container = document.getElementById('audio-player-wrapper');
+                var iframe = document.createElement('iframe');
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.border = "none";
+                iframe.style.display = "block";
+                
+                container.innerHTML = ""; 
+                container.appendChild(iframe);
+                
+                var doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(playerContent);
+                doc.close();
 
-      // SVGs
-      const playIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-      const pauseIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-
-      let isDragging = false;
-      let visualPlaying = false; 
-
-      /* --- ADVANCED RANDOMIZED WAVEFORM LOGIC --- */
-      const canvas = document.getElementById('waveformCanvas');
-      const ctx = canvas.getContext('2d');
-      
-      const lines = [
-        { color: '#FF76A2',               baseAmp: 30, speed: 0.05, freq: 0.01 },
-        { color: 'rgba(255, 118, 162, 0.6)', baseAmp: 25, speed: 0.03, freq: 0.015 },
-        { color: 'rgba(255, 118, 162, 0.3)', baseAmp: 40, speed: 0.02, freq: 0.008 }
-      ];
-
-      let time = 0;
-      let currentEnergy = 0;
-      let targetEnergy = 0;
-
-      function resizeCanvas() {
-        if(visualWrapper) {
-          canvas.width = visualWrapper.clientWidth;
-          canvas.height = visualWrapper.clientHeight;
-        }
-      }
-      
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas(); 
-
-      function animateWaveform() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const centerY = canvas.height / 2;
-        
-        if (visualPlaying) {
-          if(Math.random() > 0.90) {
-              targetEnergy = Math.random() * 1.5 + 0.5; 
-          }
-          targetEnergy *= 0.98;
-          if(targetEnergy < 0.5) targetEnergy = 0.5;
-        } else {
-          targetEnergy = 0.1;
-        }
-
-        currentEnergy += (targetEnergy - currentEnergy) * 0.1;
-        time += 0.15;
-
-        lines.forEach((line, index) => {
-          ctx.beginPath();
-          ctx.strokeStyle = line.color;
-          ctx.lineWidth = 2;
-
-          for (let x = 0; x < canvas.width; x += 2) { 
-            const normX = (x / canvas.width) * 2 - 1;
-            const damping = Math.cos(normX * Math.PI / 2);
-            
-            const y1 = Math.sin(x * line.freq + time * line.speed);
-            const y2 = Math.sin(x * (line.freq * 2.5) - time * (line.speed * 1.5));
-            const y3 = Math.sin(x * 0.05 + time * 0.5);
-
-            const waveHeight = (y1 + y2 * 0.5 + y3 * 0.2);
-            const y = centerY + waveHeight * (line.baseAmp * currentEnergy * damping);
-              
-            if(x === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-        });
-
-        requestAnimationFrame(animateWaveform);
-      }
-
-      animateWaveform();
-
-      /* --- PLAYER LOGIC --- */
-      function init() {
-        // Initialize with first tab without playing
-        const firstTab = document.querySelector('.ind-tab.active');
-        if (firstTab) {
-            selectIndustry('plumbing', firstTab, false);
-        }
-      }
-
-      function toggleAudio() {
-        if (audioPlayer.paused) {
-          const playPromise = audioPlayer.play();
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                setPlayingState(true);
-              })
-              .catch(error => {
-                console.error("Playback failed. Check audio URL.", error);
-                setPlayingState(false);
-              });
-          }
-        } else {
-          audioPlayer.pause();
-          setPlayingState(false);
-        }
-      }
-
-      function setPlayingState(isPlaying) {
-        visualPlaying = isPlaying;
-        if(isPlaying) {
-          topBtn.innerHTML = pauseIcon;
-          visualWrapper.classList.add('is-active');
-        } else {
-          topBtn.innerHTML = playIcon;
-          visualWrapper.classList.remove('is-active');
-        }
-      }
-
-      // Expose selectIndustry to global window so HTML onclick works
-      window.selectIndustry = function(key, btn, autoPlay = true) {
-        document.querySelectorAll('.ind-tab').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
-
-        audioPlayer.pause();
-        setPlayingState(false);
-
-        if (industryData[key]) {
-            audioPlayer.src = industryData[key];
-        } else {
-            console.error("Audio URL not found for:", key);
-            return;
-        }
-        
-        seeker.value = 0;
-        timeDisplay.innerText = "0:00 / 0:00";
-
-        // Handle Metadata load
-        audioPlayer.onloadedmetadata = () => {
-          updateTimeDisplay(); // Update immediately on load
-          if(autoPlay) toggleAudio();
-        };
-      };
-
-      audioPlayer.addEventListener('timeupdate', () => {
-        if(!isDragging && audioPlayer.duration) {
-          const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-          seeker.value = percent || 0;
-          updateTimeDisplay();
-        }
-      });
-
-      audioPlayer.addEventListener('ended', () => {
-        setPlayingState(false);
-        seeker.value = 100;
-      });
-
-      audioPlayer.addEventListener('error', (e) => {
-          console.error("Audio Error:", e);
-          setPlayingState(false);
-      });
-
-      seeker.addEventListener('input', () => {
-        isDragging = true;
-        if (audioPlayer.duration) {
-             const time = (seeker.value / 100) * audioPlayer.duration;
-             timeDisplay.innerText = `${formatTime(time)} / ${formatTime(audioPlayer.duration)}`;
-        }
-      });
-
-      seeker.addEventListener('change', () => {
-        isDragging = false;
-        if (audioPlayer.duration) {
-            const time = (seeker.value / 100) * audioPlayer.duration;
-            audioPlayer.currentTime = time;
-        }
-      });
-
-      function updateTimeDisplay() {
-        const current = audioPlayer.currentTime || 0;
-        const total = audioPlayer.duration || 0;
-        timeDisplay.innerText = `${formatTime(current)} / ${formatTime(total)}`;
-      }
-
-      function formatTime(seconds) {
-        if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
-        const m = Math.floor(seconds / 60);
-        const s = Math.floor(seconds % 60);
-        return `${m}:${s < 10 ? '0' : ''}${s}`;
-      }
-
-      resetBtn.addEventListener('click', () => {
-        audioPlayer.currentTime = 0;
-        if(audioPlayer.paused) toggleAudio();
-      });
-
-      topBtn.addEventListener('click', toggleAudio);
-      centerBtn.addEventListener('click', toggleAudio);
-
-      init();
-
-    });
-  </script>
-</section>
+                })();
+                </script>
+           
             <section class="section section-space">
                 <div class="container">
                     <div data-module="SectionHeading" data-wf--section-heading--variant="base" class="section-heading">
